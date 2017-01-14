@@ -1,0 +1,58 @@
+{
+  "name": "photo-descriptor-nano",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/App.ts",
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/electron": "^1.4.31",
+    "@types/es6-promise": "0.0.32",
+    "@types/es6-shim": "^0.31.32",
+    "@types/node": "^7.0.0",
+    "@types/vue": "^2.0.0",
+    "electron-forge": "^2.7.0",
+    "electron-prebuilt-compile": "1.4.14"
+  },
+  "dependencies": {
+    "vue": "^2.1.8",
+    "vue-class-component": "^4.4.0",
+    "vue-material": "^0.6.3",
+    "vue-moment": "^2.0.2",
+    "vue-validator": "^3.0.0-alpha.2"
+  },
+  "config": {
+    "forge": {
+      "make_targets": {
+        "win32": [
+          "squirrel"
+        ],
+        "darwin": [
+          "zip"
+        ],
+        "linux": [
+          "deb",
+          "rpm"
+        ]
+      },
+      "electronPackagerConfig": {},
+      "electronWinstallerConfig": {
+        "name": ""
+      },
+      "electronInstallerDebian": {},
+      "electronInstallerRedhat": {},
+      "github_repository": {
+        "owner": ""
+      },
+      "windowsStoreConfig": {
+        "packageName": ""
+      }
+    }
+  }
+}

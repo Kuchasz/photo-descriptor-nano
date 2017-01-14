@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Photo Descriptor Nano</title>
+    <link rel="stylesheet" href="Style.scss"/>
+    <link rel="stylesheet" href="../../../node_modules/vue-material/dist/vue-material.css"/>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+    <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+<body>
+    <md-layout md-column md-gutter id="app">
+        <md-layout md-flex>
+            <md-tabs>
+                <md-tab md-label="Wczytywanie zdjęć">
+                    <folder-selector v-on:files-selected="selectFiles"></folder-selector>
+                </md-tab>
+
+                <md-tab md-label="Tworzenie opisów" class="t-image-description">
+                    <md-layout md-column md-flex>
+                        <images-list></images-list>
+                        <description-form></description-form>
+                        <image-placeholder md-flex></image-placeholder>
+                    </md-layout>
+                </md-tab>
+
+                <md-tab id="music" md-label="Export">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt dolorum quas amet cum vitae, omnis! Illum quas voluptatem, expedita iste, dicta ipsum ea veniam dolore in, quod saepe reiciendis nihil.</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt dolorum quas amet cum vitae, omnis! Illum quas voluptatem, expedita iste, dicta ipsum ea veniam dolore in, quod saepe reiciendis nihil.</p>
+                </md-tab>
+            </md-tabs>
+        </md-layout>
+        <status-bar :folder-path="folderPath" :files-amount="filesAmount"></status-bar>
+    </md-layout>
+    <script src="./Index.ts"></script>
+</body>
+</html>
