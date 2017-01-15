@@ -13,24 +13,22 @@
         <md-layout md-flex>
             <md-tabs>
                 <md-tab md-label="Wczytywanie zdjęć">
-                    <folder-selector @files-selected="selectFiles"></folder-selector>
+                    <folder-selector @files-selected="selectDirectory"></folder-selector>
                 </md-tab>
 
                 <md-tab md-label="Tworzenie opisów" class="t-image-description">
                     <md-layout md-column md-flex>
                         <images-list @image-select="selectImage" :images="images"></images-list>
-                        <description-form></description-form>
+                        <description-form @update-description="updateDescription" @update-tags="updateTags" :description="currentImage.description" :tags="currentImage.tags"></description-form>
                         <image-placeholder :src="currentImage.url" md-flex></image-placeholder>
                     </md-layout>
                 </md-tab>
-
-                <md-tab id="music" md-label="Export">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt dolorum quas amet cum vitae, omnis! Illum quas voluptatem, expedita iste, dicta ipsum ea veniam dolore in, quod saepe reiciendis nihil.</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt dolorum quas amet cum vitae, omnis! Illum quas voluptatem, expedita iste, dicta ipsum ea veniam dolore in, quod saepe reiciendis nihil.</p>
+                <md-tab md-label="Export">
+                    <images-exporter @export-images="exportToSql"></images-exporter>
                 </md-tab>
             </md-tabs>
         </md-layout>
-        <status-bar :folder-path="folderPath" :files-amount="filesAmount"></status-bar>
+        <status-bar :saving="savingData" :last-save="lastSaveDate" :folder-path="folderPath" :valid-files-amount="validImagesCount" :files-amount="allImagesCount"></status-bar>
     </md-layout>
     <script src="./Index.ts"></script>
 </body>

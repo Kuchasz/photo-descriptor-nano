@@ -5,8 +5,9 @@ import {StatusBar} from "../../Components/StatusBar/Index";
 import {FolderSelector} from "../../Components/FolderSelector/Index";
 import {ImagesList} from "../../Components/ImagesList/Index";
 import {ImagePlaceholder} from "../../Components/ImagePlaceholder/Index";
-import {IFile} from "../../Utils/File";
-import {readFromDirectory} from "../../Utils/Database";
+import {IFile, getFileUrl} from "../../Utils/File";
+import {readFromDirectory, saveToDirectoryAsync} from "../../Utils/Database";
+import {ImagesExporter} from "../../Components/ImagesExporter/Index";
 
 Vue.use(require('vue-material'));
 Vue.use(require('vue-moment'));
@@ -18,28 +19,64 @@ var _app = new Vue({
         StatusBar,
         FolderSelector,
         ImagesList,
-        ImagePlaceholder
+        ImagePlaceholder,
+        ImagesExporter
+    },
+    computed: {
+        allImagesCount: function () {
+            return this.images.length;
+        },
+        validImagesCount: function () {
+            return this.images.filter(im => (im.tags && im.description)).length;
+        }
     },
     methods: {
-        selectFiles: (e: {files: IFile[], path: string}) => {
-            _app.filesAmount = e.files.length;
+        selectDirectory: (e: {files: IFile[], path: string}) => {
             _app.folderPath = e.path;
-            _app._images = e.files;
 
             const _db = readFromDirectory(e.path);
-            console.log(_db);
 
-            _app.images = e.files.map((file, id) => ({id, valid: false}));
+            const _merged = e.files.map((file, id) => ({
+                id,
+                path: file.path,
+                url: getFileUrl(file.path),
+                name: file.name,
+                tags: (_db.find(r => r.path === file.path) || {tags: ""}).tags,
+                description: (_db.find(r => r.path === file.path) || {description: ""}).description,
+            }));
+
+            _app.images = _merged;
         },
         selectImage(imageId: number){
-            _app.currentImage = _app._images[imageId];
+            _app.currentImage = _app.images.find(im => im.id === imageId);
+        },
+        updateDescription(description: string){
+            if (_app.currentImage) {
+                _app.currentImage.description = description;
+            }
+        },
+        updateTags(tags: string){
+            _app.currentImage.tags = tags;
+        },
+        exportToSql: function () {
+
         }
     },
     data: {
-        filesAmount: 0,
         folderPath: '',
         currentImage: {},
         images: [],
-        _images: []
+        _images: [],
+        lastSaveDate: new Date(),
+        savingData: false
     }
 });
+
+setInterval(() => {
+    if (_app.folderPath === "") return;
+    _app.savingData = true;
+    saveToDirectoryAsync(_app.folderPath, _app.images).then(() => {
+        _app.savingData = false;
+        _app.lastSaveDate = new Date();
+    });
+}, 10000);

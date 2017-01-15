@@ -8,12 +8,12 @@ export interface IFile {
     url: string;
 }
 
-function getFileUrl(str) {
-    if (typeof str !== 'string') {
+export function getFileUrl(path: string) {
+    if (typeof path !== 'string') {
         throw new Error('Expected a string');
     }
 
-    var pathName = resolve(str).replace(/\\/g, '/');
+    var pathName = resolve(path).replace(/\\/g, '/');
 
     if (pathName[0] !== '/') {
         pathName = '/' + pathName;
@@ -36,8 +36,4 @@ export function getJpegsFromFilePath(filePath: string): IFile[] {
 
 export function getFolderPathFromFilePath(filePath: string): string {
     return dirname(filePath);
-}
-
-export function getFilesMetadata(folderPath: string): IFile[]{
-
 }

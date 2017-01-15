@@ -10,11 +10,11 @@ import Component from 'vue-class-component';
                   <md-button class="md-fab md-clean">
                     <md-icon>cached</md-icon>
                   </md-button>
-                  <md-spinner :md-stroke="2.2" :md-size="64" md-indeterminate></md-spinner>
+                  <md-spinner v-if="saving" :md-stroke="2.2" :md-size="64" md-indeterminate></md-spinner>
                 </md-theme>
-                <md-layout md-gutter md-column md-flex>
-                    <span class="md-headline">{{folderPath}}</span>
-                    <span class="md-subheading">Opisano {{fill}} na {{filesAmount}} zdjęć.</span>
+                <md-layout md-align="center" md-column>
+                    <span class="md-headline">{{folderPathSummary}}</span>
+                    <span class="md-subheading">Opisano {{validFilesAmount}} na {{filesAmount}} zdjęć.</span>
                     <span class="md-caption">Ostatni zapis miał miejsce: {{ lastSave | moment('HH:mm:ss') }}</span>
                 </md-layout>
             </md-layout>
@@ -22,14 +22,18 @@ import Component from 'vue-class-component';
     `,
     props: {
         filesAmount: Number,
-        folderPath: String
+        validFilesAmount: Number,
+        folderPath: String,
+        lastSave: Date,
+        saving: Boolean
     }
 })
 export class StatusBar extends Vue {
-    fill: number = 133;
-    lastSave: Date = new Date();
+    get folderPathSummary() {
+        return this.folderPath || 'Nie wybrano folderu';
+    }
 
     get progress() {
-        return this.fill / this.filesAmount * 100;
+        return this.validFilesAmount / this.filesAmount * 100;
     };
 }

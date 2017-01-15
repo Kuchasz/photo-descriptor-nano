@@ -4,10 +4,10 @@ import Component from 'vue-class-component';
     template: `
         <md-layout md-row md-gutter class="images-list">
             <md-theme v-for="image in images">
-                <md-button @click="selectImage(image.id)" v-if="image.valid" class="md-icon-button md-raised md-primary">
+                <md-button @click="selectImage(image.id)" v-if="image.tags && image.description" class="md-icon-button md-raised md-primary">
                   <span>{{image.id}}</span>
                 </md-button>
-                <md-button @click="selectImage(image.id)" v-if="!image.valid" class="md-icon-button md-raised md-accent">
+                <md-button @click="selectImage(image.id)" v-if="!image.tags || !image.description" class="md-icon-button md-raised md-accent">
                   <span>{{image.id}}</span>
                 </md-button>
             </md-theme>

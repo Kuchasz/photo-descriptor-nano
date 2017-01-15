@@ -14,13 +14,14 @@ import {getJpegsFromFilePath, getFolderPathFromFilePath} from "../../Utils/File"
 export class FolderSelector extends Vue {
     files: any[] = [];
 
-    selected(param: FileList){
-        if(param.length === 1){
-            var _file = param.item(0);
-            this.$emit('files-selected', {
-                path: getFolderPathFromFilePath(_file.path),
-                files: getJpegsFromFilePath(_file.path)
-            });
-        }
+    selected(param: FileList) {
+        var _file = param.item(0);
+        if (_file) this.$emit('files-selected', {
+            path: getFolderPathFromFilePath(_file.path),
+            files: getJpegsFromFilePath(_file.path)
+        }); else this.$emit('files-selected', {
+            path: '',
+            files: []
+        })
     }
 }
