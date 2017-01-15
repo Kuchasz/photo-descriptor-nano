@@ -52,6 +52,15 @@ body {
   .md-theme {
     .md-button {
       margin: 2px;
+      width: 20px;
+      min-width: 20px;
+      height: 20px;
+      min-height: 20px;
+      line-height: 12px;
+      padding: 0px;
+      span {
+        font-size: 12px !important;
+      }
     }
   }
 }

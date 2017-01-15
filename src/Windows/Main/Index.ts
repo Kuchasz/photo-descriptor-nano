@@ -20,13 +20,21 @@ var _app = new Vue({
         ImagePlaceholder
     },
     methods: {
-        selectFiles: (e:{files: IFile[], path: string}) => {
+        selectFiles: (e: {files: IFile[], path: string}) => {
             _app.filesAmount = e.files.length;
             _app.folderPath = e.path;
+            _app._images = e.files;
+            _app.images = e.files.map((file, id) => ({id, valid: false}));
+        },
+        selectImage(imageId: number){
+            _app.currentImage = _app._images[imageId];
         }
     },
     data: {
         filesAmount: 0,
-        folderPath: ''
+        folderPath: '',
+        currentImage: {},
+        images: [],
+        _images: []
     }
 });

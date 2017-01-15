@@ -21,6 +21,7 @@
     "electron-prebuilt-compile": "1.4.14"
   },
   "dependencies": {
+    "electron-compile": "^5.1.2",
     "vue": "^2.1.8",
     "vue-class-component": "^4.4.0",
     "vue-material": "^0.6.3",

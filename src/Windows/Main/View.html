@@ -13,14 +13,14 @@
         <md-layout md-flex>
             <md-tabs>
                 <md-tab md-label="Wczytywanie zdjęć">
-                    <folder-selector v-on:files-selected="selectFiles"></folder-selector>
+                    <folder-selector @files-selected="selectFiles"></folder-selector>
                 </md-tab>
 
                 <md-tab md-label="Tworzenie opisów" class="t-image-description">
                     <md-layout md-column md-flex>
-                        <images-list></images-list>
+                        <images-list @image-select="selectImage" :images="images"></images-list>
                         <description-form></description-form>
-                        <image-placeholder md-flex></image-placeholder>
+                        <image-placeholder :src="currentImage.url" md-flex></image-placeholder>
                     </md-layout>
                 </md-tab>
 

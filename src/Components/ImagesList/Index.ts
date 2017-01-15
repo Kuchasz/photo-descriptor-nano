@@ -13,10 +13,12 @@ import Component from 'vue-class-component';
             </md-theme>
         </md-layout>
 `,
+    props: {
+        images: Array
+    }
 })
 export class ImagesList extends Vue {
-    images: any[] = Array.from(new Array(50)).map((_, id) => ({id, valid: Math.random()>0.3}));
-    selectImage(id: number){
-        this.$emit('imageSelect', id);
+    selectImage(id: number) {
+        this.$emit('image-select', id);
     }
 }
