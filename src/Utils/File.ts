@@ -37,3 +37,7 @@ export function getJpegsFromFilePath(filePath: string): IFile[] {
 export function getFolderPathFromFilePath(filePath: string): string {
     return dirname(filePath);
 }
+
+export function getFilesMetadata(folderPath: string): IFile[]{
+
+}

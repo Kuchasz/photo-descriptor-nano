@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/csv-parse": "^1.1.6",
     "@types/electron": "^1.4.31",
     "@types/es6-promise": "0.0.32",
     "@types/es6-shim": "^0.31.32",
@@ -21,6 +22,7 @@
     "electron-prebuilt-compile": "1.4.14"
   },
   "dependencies": {
+    "csv-parse": "^1.1.9",
     "electron-compile": "^5.1.2",
     "vue": "^2.1.8",
     "vue-class-component": "^4.4.0",
