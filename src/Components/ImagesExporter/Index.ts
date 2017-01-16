@@ -12,7 +12,7 @@ import Component from 'vue-class-component';
 `
 })
 export class ImagesExporter extends Vue {
-    galleryAlias: string;
+    galleryAlias: string = 'sss';
     exportSql() {
         this.$emit('export-images');
     }

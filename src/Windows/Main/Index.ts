@@ -8,6 +8,7 @@ import {ImagePlaceholder} from "../../Components/ImagePlaceholder/Index";
 import {IFile, getFileUrl} from "../../Utils/File";
 import {readFromDirectory, saveToDirectoryAsync} from "../../Utils/Database";
 import {ImagesExporter} from "../../Components/ImagesExporter/Index";
+import {processImages} from "../../Utils/Image";
 
 Vue.use(require('vue-material'));
 Vue.use(require('vue-moment'));
@@ -59,7 +60,7 @@ var _app = new Vue({
             _app.currentImage.tags = tags;
         },
         exportToSql: function () {
-
+            processImages(this.images.map(im => im.path));
         }
     },
     data: {
