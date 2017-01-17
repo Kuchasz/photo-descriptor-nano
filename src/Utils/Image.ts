@@ -3,6 +3,8 @@ import {dirname, basename} from 'path';
 import {mkdir} from 'fs';
 import {freemem} from 'os';
 import {Observable} from 'rxjs';
+import {ipcRenderer} from 'electron';
+
 
 export function processImages(imagesPaths: string[]) {
     if (imagesPaths.length > 0) {
@@ -10,22 +12,47 @@ export function processImages(imagesPaths: string[]) {
         const _dir = dirname(imagesPaths[0]);
         const _targetDir = `${_dir}/thumb`;
 
+        // mkdir(_targetDir, (err)=>{
+        //
+        // });
+
+        // Observable
+        //     .bindCallback(mkdir)(_targetDir)
+        //     .mergeMap(() => imagesPaths)
+        //     // .mergeMap(path => Observable.fromPromise(processImageAsync(path, _targetDir)), 1)
+        //     .mergeMap(path => Observable.create((subscriber) => {
+        //         console.log('starting...');
+        //         processImageAsync(path, _targetDir).then(() => subscriber.complete());
+        //     }), 1)
+        //     .subscribe((path) => {
+        //         console.log(freemem());
+        //         console.log(`Image processed: ${path}`);
+        //     });
         Observable
             .bindCallback(mkdir)(_targetDir)
             .mergeMap(() => imagesPaths)
-            // .mergeMap(path => Observable.fromPromise(processImageAsync(path, _targetDir)), 1)
             .mergeMap(path => Observable.create((subscriber) => {
                 console.log('starting...');
-                processImageAsync(path, _targetDir).then(() => subscriber.complete());
+                processImageExternally(path, _targetDir).then(() => subscriber.complete());
             }), 1)
             .subscribe((path) => {
                 console.log(freemem());
                 console.log(`Image processed: ${path}`);
+                global.gc();
             });
     }
 }
 
-function processImageAsync(imagePath: string, targetDir: string): Promise<void> {
+function processImageExternally(imagePath: string, targetDir: string): Promise<void> {
+    return new Promise<void>((res, rej) => {
+        ipcRenderer.send('process-image', JSON.stringify({imagePath, targetDir}));
+        ipcRenderer.on('image-processed', () => {
+            res();
+        })
+    });
+}
+
+export function processImageAsync(imagePath: string, targetDir: string): Promise<void> {
     return new Promise<void>((res, rej) => {
         open(imagePath, (err, img) => {
             img.batch()
@@ -36,6 +63,7 @@ function processImageAsync(imagePath: string, targetDir: string): Promise<void> 
                         rej('Image not saved');
                     res();
                 });
+
         });
     });
 }
