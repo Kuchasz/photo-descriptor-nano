@@ -60,7 +60,7 @@ var _app = new Vue({
             _app.currentImage.tags = tags;
         },
         exportToSql: function () {
-            processImages(this.images.map(im => im.path));
+            processImages(this.images);
         }
     },
     data: {

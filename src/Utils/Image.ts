@@ -4,42 +4,62 @@ import {mkdir} from 'fs';
 import {freemem} from 'os';
 import {Observable} from 'rxjs';
 import {ipcRenderer} from 'electron';
+import {createReadStream} from "fs";
+import {createWriteStream} from "fs";
+import {IFile} from "./File";
 
 
-export function processImages(imagesPaths: string[]) {
-    if (imagesPaths.length > 0) {
+export function processImages(images: any[]) {
+    if (images.length > 0) {
 
-        const _dir = dirname(imagesPaths[0]);
+        const _dir = dirname(images[0].path);
         const _targetDir = `${_dir}/thumb`;
 
-        // mkdir(_targetDir, (err)=>{
-        //
-        // });
-
-        // Observable
-        //     .bindCallback(mkdir)(_targetDir)
-        //     .mergeMap(() => imagesPaths)
-        //     // .mergeMap(path => Observable.fromPromise(processImageAsync(path, _targetDir)), 1)
-        //     .mergeMap(path => Observable.create((subscriber) => {
-        //         console.log('starting...');
-        //         processImageAsync(path, _targetDir).then(() => subscriber.complete());
-        //     }), 1)
-        //     .subscribe((path) => {
-        //         console.log(freemem());
-        //         console.log(`Image processed: ${path}`);
-        //     });
         Observable
             .bindCallback(mkdir)(_targetDir)
-            .mergeMap(() => imagesPaths)
-            .mergeMap(path => Observable.create((subscriber) => {
+            .mergeMap(() => images)
+            .mergeMap(image => Observable.create((subscriber) => {
                 console.log('starting...');
-                processImageExternally(path, _targetDir).then(() => subscriber.complete());
+                processImageAync(image.path, _targetDir, image.tags, image.id).then(() => subscriber.complete());
             }), 1)
             .subscribe((path) => {
                 console.log(freemem());
                 console.log(`Image processed: ${path}`);
                 global.gc();
             });
+    }
+}
+
+export function processImageAync(imagePath: string, targetDir: string, tags: string, id: number): Promise<void> {
+    return new Promise<void>((res, rej) => {
+        copyFile(imagePath, `${targetDir}/${tags.split(' ').map(tag => tag.toLocaleLowerCase()).join('-')}-${id}.jpg`, (err) => {
+            err && rej(err);
+            res();
+        });
+    });
+}
+
+function copyFile(source, target, cb) {
+    let cbCalled = false;
+
+    const rd = createReadStream(source);
+    rd.on("error", function (err) {
+        done(err);
+    });
+    const wr = createWriteStream(target);
+    wr.on("error", function (err) {
+        done(err);
+    });
+    wr.on("close", function (ex) {
+        done();
+    });
+    rd.pipe(wr);
+
+    function done(err?) {
+        if (!cbCalled) {
+            cb(err);
+            cbCalled = true;
+        }
     }
 }
 
@@ -52,21 +72,21 @@ function processImageExternally(imagePath: string, targetDir: string): Promise<v
     });
 }
 
-export function processImageAsync(imagePath: string, targetDir: string): Promise<void> {
-    return new Promise<void>((res, rej) => {
-        open(imagePath, (err, img) => {
-            img.batch()
-                .scale(calculateTargetRatio(img.width(), img.height()))
-                .writeFile(`${targetDir}/${basename(imagePath)}`, (err) => {
-                    console.log(freemem());
-                    if (err)
-                        rej('Image not saved');
-                    res();
-                });
-
-        });
-    });
-}
+// export function processImageAsync(imagePath: string, targetDir: string): Promise<void> {
+//     return new Promise<void>((res, rej) => {
+//         open(imagePath, (err, img) => {
+//             img.batch()
+//                 .scale(calculateTargetRatio(img.width(), img.height()))
+//                 .writeFile(`${targetDir}/${basename(imagePath)}`, (err) => {
+//                     console.log(freemem());
+//                     if (err)
+//                         rej('Image not saved');
+//                     res();
+//                 });
+//
+//         });
+//     });
+// }
 //
 // function processImage(imagesPaths: string[], targetDir: string, currentPathIndex: number = 0) {
 //     const path = imagesPaths[currentPathIndex];
