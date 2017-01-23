@@ -7,11 +7,13 @@ import {ipcRenderer} from 'electron';
 import {createReadStream} from "fs";
 import {createWriteStream} from "fs";
 import {IFile} from "./File";
+import {writeFileSync} from "fs";
 
 
-export function processImagesExternally(images: any[], onProgress: {(progress: number): void}){
+export function processImagesExternally(images: any[], onProgress: {(progress: number): void}) {
+
     ipcRenderer.send('process-images', JSON.stringify(images));
-    ipcRenderer.on('image-processed', (sender, progress: number)=>{
+    ipcRenderer.on('image-processed', (sender, progress: number) => {
         onProgress(progress);
     });
 }
@@ -33,7 +35,18 @@ export function processImages(images: any[], onProgress: {(progress: number): vo
                 .subscribe((path) => {
                     currentImageIndex++;
                     onProgress(currentImageIndex / _maxImages * 100);
-                    if (currentImageIndex === _maxImages) res();
+                    if (currentImageIndex === (_maxImages-1)) {
+                        const _queries = images.map(image => {
+                            const photoUrl = `${image.tags.split(' ').map(tag => tag.toLocaleLowerCase()).join('-')}-${image.id}.jpg`;
+                            return `INSERT INTO photo(GalleryId, photourl, alttext) VALUES ([GalleryId],${photoUrl},${image.description})`;
+                        }).reduce((l, r) => {
+                            return l + '; ' + r;
+                        }, '');
+
+                        writeFileSync(`${_targetDir}/sql.txt`, _queries);
+
+                        res();
+                    }
                 });
         } else
             res();

@@ -2,7 +2,9 @@ import * as electron from 'electron';
 
 import {format} from 'url';
 import {join} from 'path';
+
 import {processImages} from "./Utils/Image";
+import {writeFile} from "fs";
 
 var app = electron.app;
 
