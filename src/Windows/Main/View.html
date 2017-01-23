@@ -24,7 +24,7 @@
                     </md-layout>
                 </md-tab>
                 <md-tab md-label="Export">
-                    <images-exporter @export-images="exportToSql"></images-exporter>
+                    <images-exporter :progress="imagesProcessingProgress" @export-images="exportImages"></images-exporter>
                 </md-tab>
             </md-tabs>
         </md-layout>

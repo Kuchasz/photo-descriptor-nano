@@ -7,13 +7,17 @@ import Component from 'vue-class-component';
             <label>Alias do galerii</label>
             <md-input v-model="galleryAlias" placeholder="Wpisz alias do galerii"></md-input>
         </md-input-container>
-        <md-button @click="exportSql" class="md-raised md-primary">Export do SQL</md-button>
+        <md-button @click="exportImages" class="md-raised md-primary">Exportuj zdjęcia</md-button>
+        <md-spinner :md-progress="progress"></md-spinner>
       </md-layout>
-`
+`,
+    props: {
+        progress: Number
+    }
 })
 export class ImagesExporter extends Vue {
     galleryAlias: string = 'sss';
-    exportSql() {
+    exportImages() {
         this.$emit('export-images');
     }
 }

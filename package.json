@@ -26,7 +26,6 @@
     "@reactivex/rxjs": "^5.0.3",
     "csv-parse": "^1.1.9",
     "electron-compile": "^5.1.2",
-    "lwip": "0.0.9",
     "vue": "^2.1.8",
     "vue-class-component": "^4.4.0",
     "vue-material": "^0.6.3",

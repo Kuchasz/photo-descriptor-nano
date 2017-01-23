@@ -8,7 +8,7 @@ import {ImagePlaceholder} from "../../Components/ImagePlaceholder/Index";
 import {IFile, getFileUrl} from "../../Utils/File";
 import {readFromDirectory, saveToDirectoryAsync} from "../../Utils/Database";
 import {ImagesExporter} from "../../Components/ImagesExporter/Index";
-import {processImages} from "../../Utils/Image";
+import {processImages, processImagesExternally} from "../../Utils/Image";
 
 Vue.use(require('vue-material'));
 Vue.use(require('vue-moment'));
@@ -48,19 +48,22 @@ var _app = new Vue({
 
             _app.images = _merged;
         },
-        selectImage(imageId: number){
+        selectImage: (imageId: number) => {
             _app.currentImage = _app.images.find(im => im.id === imageId);
         },
-        updateDescription(description: string){
+        updateDescription: (description: string) => {
             if (_app.currentImage) {
                 _app.currentImage.description = description;
             }
         },
-        updateTags(tags: string){
+        updateTags: (tags: string) => {
             _app.currentImage.tags = tags;
         },
-        exportToSql: function () {
-            processImages(this.images);
+        exportImages: () => {
+            processImagesExternally(_app.images, (progress: number)=>{
+                _app.imagesProcessingProgress = Math.floor(progress);
+                if(progress===100)_app.imagesProcessingProcess = 0;
+            });
         }
     },
     data: {
@@ -69,7 +72,8 @@ var _app = new Vue({
         images: [],
         _images: [],
         lastSaveDate: new Date(),
-        savingData: false
+        savingData: false,
+        imagesProcessingProgress: 0
     }
 });
 
